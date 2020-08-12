@@ -18,12 +18,11 @@ class _SignUpState extends State<SignUp> {
   var _passFieldController = new TextEditingController();
   var _rePassFieldController = new TextEditingController();
 
-  bool _isPressed = false;
-
   @override
   void initState() {
     super.initState();
   }
+
 
   Widget _nameTextField() {
     return Column(
@@ -261,8 +260,10 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  AlertDialog alert = AlertDialog(
+  // DIALOGS
+  AlertDialog loading = AlertDialog(
     backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     content: Container(
       decoration: BoxDecoration(
           color: Colors.grey.shade700,
@@ -272,6 +273,72 @@ class _SignUpState extends State<SignUp> {
       child: AwesomeLoader(
         loaderType: AwesomeLoader.AwesomeLoader3,
         color: Colors.purpleAccent.shade100,
+      ),
+    ),
+  );
+
+  AlertDialog caution = AlertDialog(
+    backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 10.0,
+      color: Colors.grey.shade700,
+      child: ListTile(
+        leading: Icon(Icons.close, color: Colors.purpleAccent.shade100,),
+        title: (Text(
+            'An error has occurred !',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+                fontSize: 15)
+        )),
+      ),
+    ),
+  );
+
+  AlertDialog emailAlready = AlertDialog(
+    backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 10.0,
+      color: Colors.grey.shade700,
+      child: ListTile(
+        leading: Icon(Icons.close, color: Colors.purpleAccent.shade100,),
+        title: (Text(
+            'Email already exists !',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+                fontSize: 15)
+        )),
+      ),
+    ),
+  );
+
+  AlertDialog success = AlertDialog(
+    backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 10.0,
+      color: Colors.grey.shade700,
+      child: ListTile(
+        leading: Icon(Icons.done_outline, color: Colors.purpleAccent.shade100,),
+        title: (Text(
+          'Account created successfully!',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+                fontSize: 15)
+        )),
       ),
     ),
   );
@@ -336,27 +403,59 @@ class _SignUpState extends State<SignUp> {
     if (_nameFieldController.text.toString().isNotEmpty &&
         _emailFieldController.text.toString().isNotEmpty &&
         _passFieldController.text.toString().isNotEmpty) {
-      if(_passFieldController.text.length >= 6){
+      if (_passFieldController.text.length >= 6) {
         if (_passFieldController.text.toString().trim() ==
             _rePassFieldController.text.toString().trim()) {
           showDialog(
+            barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
-              return alert;
+              return loading;
             },
           );
           String email, pass, name;
           email = _emailFieldController.text.trim();
           pass = _passFieldController.text.trim();
           name = _nameFieldController.text;
-          String URL = 'https://noobistani.000webhostapp.com/noobistani/admin_signup.php?email=$email&name=$name&password=$pass';
+          String URL =
+              'https://noobistani.000webhostapp.com/noobistani/admin_signup.php?email=$email&name=$name&password=$pass';
           http.Response response = await http.get(URL);
-          if(response.body == 'Email already exists'){
+          if (response.body.contains('Email already exists')) {
             Navigator.of(context).pop();
-          }else if(response.body == 'Your Account created successfully'){
-
-          }else{
-
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return emailAlready;
+              },
+            );
+            await Future.delayed(Duration(seconds: 2), (){
+              Navigator.of(context).pop();
+            });
+          } else if (response.body == 'Your Account created successfully') {
+            Navigator.of(context).pop();
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return success;
+              },
+            );
+            await Future.delayed(Duration(seconds: 2), (){
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            });
+          } else {
+            Navigator.of(context).pop();
+            await Future.delayed(Duration(seconds: 2), (){
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return caution;
+                },
+              );
+            });
           }
           print(response.body);
           // Register Function
@@ -370,7 +469,7 @@ class _SignUpState extends State<SignUp> {
               textColor: Colors.white,
               fontSize: 16.0);
         }
-      }else{
+      } else {
         Fluttertoast.showToast(
             msg: "Password must be greater than 6",
             toastLength: Toast.LENGTH_SHORT,
@@ -380,7 +479,6 @@ class _SignUpState extends State<SignUp> {
             textColor: Colors.white,
             fontSize: 16.0);
       }
-
     } else {
       Fluttertoast.showToast(
           msg: "Text fields must not be empty!",

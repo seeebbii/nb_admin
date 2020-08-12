@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'package:awesome_loader/awesome_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nb_admin/models/User.dart';
+import 'package:nb_admin/ui/HomePage.dart';
 import 'package:nb_admin/utilities/constant_dart.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'SignupScreen.dart';
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,17 +15,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailKey = GlobalKey<FormState>();
-  final _passKey  = GlobalKey<FormState>();
-  String email, pass;
-
+  var _emailFieldController = new TextEditingController();
+  var _passFieldController = new TextEditingController();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
-
 
   Widget _emailFormField() {
     return Column(
@@ -35,31 +37,21 @@ class _LoginScreenState extends State<LoginScreen> {
           height: 60.0,
           decoration: kBoxDecorationStyle,
           alignment: Alignment.center,
-          child: Form(
-            key: _emailKey,
-            child: TextFormField(
-              validator: (value){
-                if(value.isEmpty){
-                  return '*';
-                }else{
-                  email = value.trim();
-                  return null;
-                }
-              },
-              keyboardType: TextInputType.emailAddress,
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.email,
-                    color: Colors.white,
-                  ),
-                  hintText: "Enter your Email",
-                  hintStyle: kHintTextStyle
-              ),
+          child: TextField(
+            controller: _emailFieldController,
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(
+              color: Colors.white,
+            ),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14.0),
+                prefixIcon: Icon(
+                  Icons.email,
+                  color: Colors.white,
+                ),
+                hintText: "Enter your Email",
+                hintStyle: kHintTextStyle
             ),
           ),
         ),
@@ -82,31 +74,21 @@ class _LoginScreenState extends State<LoginScreen> {
           height: 60.0,
           decoration: kBoxDecorationStyle,
           alignment: Alignment.center,
-          child: Form(
-            key: _passKey,
-            child: TextFormField(
-              validator: (value){
-                if(value.isNotEmpty){
-                  pass = value;
-                  return null;
-                }else{
-                  return '*';
-                }
-              },
-              obscureText: true,
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.lock,
-                    color: Colors.white,
-                  ),
-                  hintText: "Enter your Password",
-                  hintStyle: kHintTextStyle
-              ),
+          child: TextField(
+            controller: _passFieldController,
+            obscureText: true,
+            style: TextStyle(
+              color: Colors.white,
+            ),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14.0),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Colors.white,
+                ),
+                hintText: "Enter your Password",
+                hintStyle: kHintTextStyle
             ),
           ),
         ),
@@ -140,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: EdgeInsets.symmetric(vertical: 25.0),
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: (){},
+        onPressed: loginUser,
         padding: EdgeInsets.all(10.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
@@ -196,6 +178,89 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  // DIALOGS
+  AlertDialog loading = AlertDialog(
+    backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Container(
+      decoration: BoxDecoration(
+          color: Colors.grey.shade700,
+          borderRadius: BorderRadius.circular(15.0)),
+      height: 200,
+      width: 50,
+      child: AwesomeLoader(
+        loaderType: AwesomeLoader.AwesomeLoader3,
+        color: Colors.purpleAccent.shade100,
+      ),
+    ),
+  );
+
+  AlertDialog error = AlertDialog(
+    backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 10.0,
+      color: Colors.grey.shade700,
+      child: ListTile(
+        leading: Icon(Icons.error_outline, color: Colors.purpleAccent.shade100,),
+        title: (Text(
+            'Invalid credentials!',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+                fontSize: 15)
+        )),
+      ),
+    ),
+  );
+
+  AlertDialog success = AlertDialog(
+    backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 10.0,
+      color: Colors.grey.shade700,
+      child: ListTile(
+        leading: Icon(Icons.done_outline, color: Colors.purpleAccent.shade100,),
+        title: (Text(
+            'Login Successful!',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+                fontSize: 15)
+        )),
+      ),
+    ),
+  );
+
+  AlertDialog caution = AlertDialog(
+    backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 10.0,
+      color: Colors.grey.shade700,
+      child: ListTile(
+        leading: Icon(Icons.close, color: Colors.purpleAccent.shade100,),
+        title: (Text(
+            'An error has occurred !',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+                fontSize: 15)
+        )),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -273,5 +338,98 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+
+
+  void loginUser() async {
+    // Validating text fields
+    if(_emailFieldController.text.toString().isNotEmpty && _passFieldController.text.toString().isNotEmpty){
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return loading;
+        },
+      );
+
+      String email, pass;
+      email = _emailFieldController.text.trim();
+      pass = _passFieldController.text.trim();
+
+      // Creating a json encoded data to send the data to server
+      String jsonObj = jsonEncode(<String, dynamic>{
+        'user_email' : email,
+        'user_password' : pass,
+      });
+
+      String URL = 'https://noobistani.000webhostapp.com/noobistani/admin_login.php';
+      http.Response response = await http.post(
+        URL,
+        headers: <String, String>{'Content-Type' : 'application/json'},
+        body: jsonObj,
+      );
+      // Checkin if the user has successfully logged in
+      if(response.statusCode == 200){
+        Navigator.of(context).pop();
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return success;
+          },
+        );
+        saveObjectToPreferences(User.fromJson(json.decode(response.body)));
+        await Future.delayed(Duration(seconds: 2), (){
+          Navigator.of(context).pop();
+          // Switch to home page here
+          Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context){
+            return HomePage();
+          }));
+        });
+      } else if(response.statusCode == 401){
+        Navigator.of(context).pop();
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return error;
+          },
+        );
+        await Future.delayed(Duration(seconds: 2), (){
+          Navigator.of(context).pop();
+        });
+      }else{
+        Navigator.of(context).pop();
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return caution;
+          },
+        );
+        await Future.delayed(Duration(seconds: 2), (){
+          Navigator.of(context).pop();
+        });
+      }
+    }else{
+      Fluttertoast.showToast(
+          msg: "Text fields must not be empty!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
+  void saveObjectToPreferences(User user) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('id', user.id);
+    prefs.setBool('loggedIn', true);
+    prefs.setString('name', user.name);
+    prefs.setString('email', user.email);
+    prefs.setString('imageUrl', user.imageUrl);
   }
 }
