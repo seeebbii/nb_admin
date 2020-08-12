@@ -1,9 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_admin/drawer/DrawerItems.dart';
 import 'package:nb_admin/main.dart';
 import 'package:nb_admin/models/User.dart';
 import 'package:nb_admin/ui/LoginScreen.dart';
+import 'package:nb_admin/ui/ProfilePage.dart';
 import 'package:nb_admin/ui/SplashScreen.dart';
+import 'package:nb_admin/ui/TournamentsPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'NewsPage.dart';
+import 'RosterPage.dart';
 
 class HomePage extends StatefulWidget {
   User user;
@@ -15,7 +22,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -23,33 +29,43 @@ class _HomePageState extends State<HomePage> {
     getSavedUser();
   }
 
+  int index = 0;
+  List<Widget> screens = [
+    NewsPage(),
+    TournamentsPage(),
+    RosterPage(),
+    ProfilePage()
+  ];
+
+  List<String> screenTitles = [
+    "News",
+    'Tournaments',
+    'Roasters',
+    'Profile'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<User>(
-        future: getSavedUser(),
-        builder: (BuildContext context, AsyncSnapshot<User> snapshot){
-          return snapshot.hasData ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(child: Text(snapshot.data.email)),
-              Center(
-                child: RaisedButton(
-                  color: Colors.black,
-                  onPressed: logOutHandler,
-                  child: Text("Logout", style: TextStyle(
-                    color: Colors.white
-                  ),),
-                ),
-              )
-            ],
-          ) : Center();
+      appBar: AppBar(
+        title: Text(screenTitles[index]),
+        centerTitle: true,
+        backgroundColor: Colors.grey.shade900,
+        elevation: defaultTargetPlatform == TargetPlatform.android ? 8.0 : 0.0,
+      ),
+      body: screens[index],
+      drawer: DrawerItems(
+        onTap: (ctx, i) {
+          setState(() {
+            index = i;
+          });
         },
+        user: widget.user,
       ),
     );
   }
 
-  Future<User> getSavedUser() async{
+  Future<User> getSavedUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String id, name, email, imageUrl;
     id = prefs.getString('id');
@@ -63,12 +79,4 @@ class _HomePageState extends State<HomePage> {
     return user;
   }
 
-
-  void logOutHandler() async{
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('loggedIn', false);
-    Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context){
-      return LoginScreen();
-    }));
-  }
 }
