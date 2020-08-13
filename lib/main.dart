@@ -30,7 +30,11 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
     setState(() {
-      loggedIn = prefs.getBool('loggedIn');
+      if(prefs.getBool('loggedIn') == null){
+        loggedIn = false;
+      }else{
+        loggedIn = prefs.getBool('loggedIn');
+      }
     });
   }
 
