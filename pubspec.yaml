@@ -36,6 +36,8 @@ dependencies:
   path_provider: ^1.6.11
   shimmer: ^1.1.1
   image_picker: ^0.6.7+4
+  flutter_datetime_picker: 1.2.5
+  flutter_countdown_timer: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +58,7 @@ flutter:
   assets:
      - assets/logo/nbLogo.png
      - assets/images/template.png
+     - assets/images/fort.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
