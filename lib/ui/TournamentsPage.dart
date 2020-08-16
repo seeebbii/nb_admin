@@ -23,27 +23,27 @@ class _TournamentsPageState extends State<TournamentsPage> {
     readData();
   }
 
-//  removeNews(NewsModel obj, int index) async {
-//    String URL =
-//        'https://noobistani.000webhostapp.com/noobistani/deleteNews.php?id=${obj.id}&image_url=https://noobistani.000webhostapp.com/noobistani/${obj.imageUrl}';
-//    http.Response response = await http.get(URL);
-//    print(response.body);
-//    setState(() {
-//      newsList.removeAt(index);
-//    });
-//  }
+  removeTournaments(TournamentsModel obj, int index) async {
+    String URL =
+        'https://noobistani.000webhostapp.com/noobistani/deleteTournaments.php?id=${obj.id}&image_url=https://noobistani.000webhostapp.com/noobistani/${obj.imageUrl}';
+    http.Response response = await http.get(URL);
+    print(response.body);
+    setState(() {
+      tourneyList.removeAt(index);
+    });
+  }
 
-//  dismissibleBg() {
-//    return Container(
-//      decoration: BoxDecoration(
-//        borderRadius: BorderRadius.circular(10),
-//        color: Colors.red,
-//      ),
-//      alignment: Alignment.centerRight,
-//      padding: const EdgeInsets.only(right: 15.0),
-//      child: Icon(Icons.delete),
-//    );
-//  }
+  dismissibleBg() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.red,
+      ),
+      alignment: Alignment.centerRight,
+      padding: const EdgeInsets.only(right: 15.0),
+      child: Icon(Icons.delete),
+    );
+  }
 
   Future<Null> refreshList() async {
     await Future.delayed(Duration(seconds: 1));
@@ -109,11 +109,11 @@ class _TournamentsPageState extends State<TournamentsPage> {
                             print(index);
                           },
                           child: Dismissible(
-//                            background: dismissibleBg(),
-//                            onDismissed: (direction) {
-//                              removeNews(newsList[index], index);
-//                              showSnackBar(context);
-//                            },
+                            background: dismissibleBg(),
+                            onDismissed: (direction) {
+                              removeTournaments(tourneyList[index], index);
+                              showSnackBar(context);
+                            },
                             key: Key(tourneyList[index].id),
                             child: new ListTile(
                               title: tourneyList[index],

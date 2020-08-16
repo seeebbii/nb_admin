@@ -2,7 +2,7 @@ import 'package:awesome_loader/awesome_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer.dart';
 
-class TournamentsModel extends StatelessWidget {
+class TournamentsModel extends StatefulWidget {
   String id;
   String startDate;
   String postDate;
@@ -11,6 +11,13 @@ class TournamentsModel extends StatelessWidget {
   String imageUrl;
 
   TournamentsModel(this.id, this.startDate, this.postDate,this.title, this.description, this.imageUrl);
+
+  @override
+  _TournamentsModelState createState() => _TournamentsModelState();
+}
+
+class _TournamentsModelState extends State<TournamentsModel> {
+  bool timerClosed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,7 @@ class TournamentsModel extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(1.0),
                 child: Image.network(
-                  'https://noobistani.000webhostapp.com/noobistani/$imageUrl',
+                  'https://noobistani.000webhostapp.com/noobistani/${widget.imageUrl}',
                   fit: BoxFit.cover,
                   height: 250,
                   width: 350,
@@ -62,7 +69,7 @@ class TournamentsModel extends StatelessWidget {
               children: <Widget>[
                 Flexible(
                   child: Text(
-                    postDate,
+                    widget.postDate,
                     style: TextStyle(color: Colors.grey, fontSize: 10),
                     textAlign: TextAlign.center,
                   ),
@@ -77,8 +84,14 @@ class TournamentsModel extends StatelessWidget {
                         color: Colors.white
                       ),
                     ),
+                    timerClosed == true ? Text('Closed', style: TextStyle(color: Colors.purpleAccent.shade100, fontSize: 13),) :
                     CountdownTimer(
-                      endTime: int.parse(startDate),
+                      onEnd: (){
+                        setState(() {
+                          timerClosed = true;
+                        });
+                      },
+                      endTime: int.parse(widget.startDate),
                       textStyle: TextStyle(fontSize: 15, color: Colors.purpleAccent.shade100),
                     ),
                   ],
@@ -89,7 +102,7 @@ class TournamentsModel extends StatelessWidget {
               height: 10.0,
             ),
             Text(
-              title,
+              widget.title,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
@@ -99,7 +112,7 @@ class TournamentsModel extends StatelessWidget {
               height: 5.0,
             ),
             Text(
-              description,
+              widget.description,
               style: TextStyle(
                 color: Colors.white60
               ),

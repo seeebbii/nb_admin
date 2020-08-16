@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nb_admin/models/RostersModel.dart';
 
 class RosterPage extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class _RosterPageState extends State<RosterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade800,
-      body: Center(child: Text('Roster')),
+      body: RostersModel('','','','','','',''),
     );
   }
 }
