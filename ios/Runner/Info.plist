@@ -14,8 +14,8 @@
 	<string>nb_admin</string>
 	<key>NSCameraUsageDescription</key>
     <string>Camera usage description</string>
-    <key>Photo Library Usage Description</key>
-    <string>Photo Library Usage Description</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>NS Photo Library Usage Description</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
