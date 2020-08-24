@@ -12,6 +12,8 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>nb_admin</string>
+	Key    :  Privacy - Photo Library Usage Description
+    Value  :  $(PRODUCT_NAME) photo use
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
