@@ -20,7 +20,7 @@ class _TournamentsPageState extends State<TournamentsPage> {
     // TODO: implement initState
     refreshKey = GlobalKey<RefreshIndicatorState>();
     super.initState();
-    readData();
+    // readData();
   }
 
   removeTournaments(TournamentsModel obj, int index) async {
@@ -56,7 +56,7 @@ class _TournamentsPageState extends State<TournamentsPage> {
 
   showSnackBar(context) {
     Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text('News Removed'),
+      content: Text('Tourney Removed'),
     ));
   }
 

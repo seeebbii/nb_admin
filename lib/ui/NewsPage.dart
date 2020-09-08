@@ -104,7 +104,7 @@ class _NewsPageState extends State<NewsPage> {
                       reverse: false,
                       shrinkWrap: false,
                       itemBuilder: (_, int index) {
-                        return InkWell(
+                        return GestureDetector(
                           onTap: (){
                             print(index);
                           },

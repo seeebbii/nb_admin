@@ -114,8 +114,8 @@ class _UploadTournamentsState extends State<UploadTournaments> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Wrap(
+              spacing: 20,
               children: [
                 RaisedButton(
                   onPressed: (){
@@ -191,7 +191,7 @@ class _UploadTournamentsState extends State<UploadTournaments> {
       child: ListTile(
         leading: Icon(Icons.done_outline, color: Colors.purpleAccent.shade100,),
         title: (Text(
-            'News updloaded Successful!',
+            'Tournament uploaded Successful!',
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w200,
