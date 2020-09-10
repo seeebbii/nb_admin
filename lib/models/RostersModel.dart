@@ -25,13 +25,13 @@ class _RostersModelState extends State<RostersModel> {
     return ExpansionTile(
       leading: Image.asset('assets/logo/lion.png', height: 50,),
       title: ListTile(
-        title: Text('Name', style: TextStyle(
+        title: Text(widget.name, style: TextStyle(
             color: isExpanded ? Colors.purpleAccent.shade100 : Colors.white,
           fontWeight: FontWeight.w500,
           fontSize: 20,
           letterSpacing: 1.5
         ),),
-        subtitle: Text('Role',
+        subtitle: Text(widget.role,
         style: TextStyle(
           color: Colors.grey.shade400,
           fontSize: 15

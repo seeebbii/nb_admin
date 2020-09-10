@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:awesome_loader/awesome_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class UploadRosters extends StatefulWidget {
   @override
@@ -82,13 +85,72 @@ class _UploadRostersState extends State<UploadRosters> {
             Center(
               child: RaisedButton(
                 child: Text('Upload'),
-                onPressed: (){},
+                onPressed: (){
+                  uploadData();
+                },
               ),
             )
           ],
         ),
       ),
     );
+  }
+
+  uploadData() async {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return loading;
+      },
+    );
+
+    String jsonObj = jsonEncode(<String, dynamic>{
+      'name' : nameController.text,
+      'role' : roleController.text,
+      'fb' : fbController.text,
+      'insta' : instaController.text,
+      'discord' : discordController.text,
+      'yt' : youtubeController.text,
+      'twitter' : twitterController.text,
+    });
+
+    String URL = 'https://noobistani.000webhostapp.com/noobistani/uploadRosters.php';
+    http.Response response = await http.post(
+      URL,
+      body: jsonObj,
+    );
+
+    print(response.body);
+    if(response.statusCode == 200){
+      Navigator.of(context).pop();
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return success;
+        },
+      );
+      await Future.delayed(Duration(seconds: 2), (){
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      });
+    }else if(response.statusCode == 401){
+      Navigator.of(context).pop();
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return caution;
+        },
+      );
+      await Future.delayed(Duration(seconds: 2), (){
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+
+      });
+    }
+
   }
 
   // DIALOGS
@@ -122,7 +184,7 @@ class _UploadRostersState extends State<UploadRosters> {
           Icons.done_outline,
           color: Colors.purpleAccent.shade100,
         ),
-        title: (Text('News updloaded Successful!',
+        title: (Text('Roster added Successful!',
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w200,
