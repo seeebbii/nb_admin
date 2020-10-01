@@ -4,7 +4,7 @@ import 'package:nb_admin/drawer/DrawerItems.dart';
 import 'package:nb_admin/main.dart';
 import 'package:nb_admin/models/User.dart';
 import 'package:nb_admin/ui/LoginScreen.dart';
-import 'package:nb_admin/ui/ProfilePage.dart';
+import 'package:nb_admin/ui/merchPage.dart';
 import 'package:nb_admin/ui/SplashScreen.dart';
 import 'package:nb_admin/ui/TournamentsPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,25 +34,25 @@ class _HomePageState extends State<HomePage> {
     NewsPage(),
     TournamentsPage(),
     RosterPage(),
-    ProfilePage()
+    MerchPage()
   ];
 
   List<String> screenTitles = [
     "News",
     'Tournaments',
     'Roasters',
-    'Profile'
+    'Merchandise'
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: index!=3 ?  AppBar(
         title: Text(screenTitles[index]),
         centerTitle: true,
         backgroundColor: Colors.grey.shade900,
         elevation: defaultTargetPlatform == TargetPlatform.android ? 8.0 : 0.0,
-      ),
+      ) : null,
       body: screens[index],
       drawer: DrawerItems(
         onTap: (ctx, i) {

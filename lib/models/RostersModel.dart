@@ -1,3 +1,4 @@
+import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -45,7 +46,8 @@ class _RostersModelState extends State<RostersModel> {
           children: [
             GestureDetector(
                 onTap: (){
-                  _launchURL(widget.facebookLink);
+                  // _launchURL(widget.facebookLink);
+                  copyToClipbord(widget.facebookLink);
                 },
                 child: Image.asset(
                   'assets/logo/fb.png',
@@ -54,7 +56,8 @@ class _RostersModelState extends State<RostersModel> {
                 )),
             GestureDetector(
               onTap: () {
-                _launchURL(widget.discordLink);
+                // _launchURL(widget.discordLink);
+                copyToClipbord(widget.discordLink);
               },
               child: Image.asset(
                 'assets/logo/discord.png',
@@ -64,7 +67,8 @@ class _RostersModelState extends State<RostersModel> {
             ),
             GestureDetector(
               onTap: () {
-                _launchURL(widget.instaLink);
+                // _launchURL(widget.instaLink);
+                copyToClipbord(widget.instaLink);
               },
               child: Image.asset(
                 'assets/logo/insta.png',
@@ -74,7 +78,8 @@ class _RostersModelState extends State<RostersModel> {
             ),
             GestureDetector(
               onTap: () {
-                _launchURL(widget.twitterLink);
+                // _launchURL(widget.twitterLink);
+                copyToClipbord(widget.twitterLink);
               },
               child: Image.asset(
                 'assets/logo/twitter.png',
@@ -84,7 +89,8 @@ class _RostersModelState extends State<RostersModel> {
             ),
             GestureDetector(
               onTap: () {
-                _launchURL(widget.youtubeLink);
+                // _launchURL(widget.youtubeLink);
+                copyToClipbord(widget.youtubeLink);
               },
               child: Image.asset(
                 'assets/logo/youtube.png',
@@ -96,6 +102,15 @@ class _RostersModelState extends State<RostersModel> {
         )
       ],
     );
+  }
+
+  copyToClipbord(String url){
+    ClipboardManager.copyToClipBoard(url).then((result) {
+      final snackBar = SnackBar(
+        content: Text('Copied to Clipboard'),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    });
   }
 
   _launchURL(String url) async {

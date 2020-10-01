@@ -100,12 +100,9 @@ class DrawerItems extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(
-                Icons.person_outline,
-                color: Colors.white,
-              ),
+              leading: Image.asset('assets/logo/tshirt.png', height: 25, color: Colors.white,),
               title: Text(
-                'Profile',
+                'Merchandise',
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w400,
